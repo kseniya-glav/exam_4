@@ -6,53 +6,52 @@ class MoviesApi(CustomRequester):
         super().__init__(base_url= BASE_URL, headers = BASE_HEADERS)
         self.session = session
 
-    def get_movies(self, params = None, headers = None, expected_status = 200):
-
+    def get_movies(self, expected_status = 200, **kwargs):
+        if (kwargs.get("headers")):
+            self._update_session_headers(self.session, kwargs["headers"])
         return self.send_requests(
             method="GET",
             endpoint=MOVIES_ENDPOINT,
-            params=params,
-            headers=headers,
-            expected_status=expected_status
+            expected_status=expected_status,
+            **kwargs
         )
     
-    def post_movies(self, data = None, params = None, headers = None, expected_status = 200):
-
+    def post_movies(self, expected_status = 200, **kwargs):
+        if (kwargs.get("headers")):
+            self._update_session_headers(self.session, kwargs["headers"])
         return self.send_requests(
             method="POST",
             endpoint=MOVIES_ENDPOINT,
-            data = data,
-            params=params,
-            headers=headers,
             expected_status=expected_status,
+            **kwargs
         )
 
-    def get_movies_id(self, id, params = None, headers = None, expected_status = 200):
-
+    def get_movies_id(self, id, expected_status = 200, **kwargs):
+        if (kwargs.get("headers")):
+            self._update_session_headers(self.session, kwargs["headers"])
         return self.send_requests(
             method="GET",
             endpoint=MOVIES_ID_ENDPOINT.format(id = id),
-            params=params,
-            headers=headers,
-            expected_status=expected_status
+            expected_status=expected_status,
+            **kwargs
         )
     
-    def delete_movies(self, id, params = None, headers = None, expected_status = 200):
-
+    def delete_movies(self, id, expected_status = 200, **kwargs):
+        if (kwargs.get("headers")):
+            self._update_session_headers(self.session, kwargs["headers"])
         return self.send_requests(
             method="DELETE",
             endpoint=MOVIES_ID_ENDPOINT.format(id = id),
-            params=params,
-            headers=headers,
-            expected_status=expected_status
+            expected_status=expected_status,
+            **kwargs
         )
 
-    def get_movies_reviews_id(self, id, params = None, headers = None, expected_status = 200):
-
+    def get_movies_reviews_id(self, id, expected_status = 200, **kwargs):
+        if (kwargs.get("headers")):
+            self._update_session_headers(self.session, kwargs["headers"])
         return self.send_requests(
             method="GET",
             endpoint=MOVIES_ID_REVIEWS_ENDPOINT.format(id = id),
-            params=params,
-            headers=headers,
-            expected_status=expected_status
+            expected_status=expected_status,
+            **kwargs
         )

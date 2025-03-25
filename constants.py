@@ -1,4 +1,4 @@
-BASE_URL = "https://api.dev-cinescope.coconutqa.ru"
+BASE_URL = "https://api.dev-cinescope.coconutqa.ru/"
 AUTH_URL = "https://auth.dev-cinescope.coconutqa.ru/"
 
 BASE_HEADERS = {
@@ -14,3 +14,8 @@ GENRES_ID_ENDPOINT = "/genres/{id}"
 
 REGISTER_ENDPOINT = "/register"
 LOGIN_ENDPOINT = "/login"
+
+SUPER_ADMIN = {
+    "email": "api1@gmail.com",
+    "password": "asdqwe123Q"
+}

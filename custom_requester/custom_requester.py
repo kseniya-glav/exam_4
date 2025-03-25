@@ -2,7 +2,6 @@ import json
 import requests
 import logging
 import os
-from constants import BASE_HEADERS
 
 class CustomRequester:
 
@@ -12,16 +11,17 @@ class CustomRequester:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-    def send_requests(self, method, endpoint, data = None, params = None, headers = None, expected_status = 200):
+    def send_requests(self, method, endpoint, expected_status = 200, **kwargs):
         url = f"{self.base_url}{endpoint}"
-        if headers:
-            self.session.headers.update(headers)
-        response = requests.request(method, url, json = data, params = params)
+        response = requests.request(method, url, **kwargs)
         self.log_request_response(response) 
         if response.status_code not in (expected_status if type(expected_status) == list else [expected_status]):
             raise ValueError(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
-        
         return response
+
+    def _update_session_headers(self, session, headers):
+        self.headers.update(headers)
+        session.headers.update(self.headers)
 
     def log_request_response(self, response):
         try:
@@ -56,10 +56,3 @@ class CustomRequester:
             self.logger.info(f"{'=' * 80}\n")
         except Exception as e:
             self.logger.error(f"\nLoging failed: {type(e)} - {e}")
-
-        '''- Выводите информацию о:
-        - URL запроса.
-        - Методе.
-        - Заголовках.
-        - Параметрах и теле запроса.
-        - Коде ответа и данных.'''
