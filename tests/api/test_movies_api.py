@@ -23,25 +23,25 @@ class TestMoviesAPI:
         response = api_manager.movies_api.get_movies(expected_status = 400, params = json_filter)
         assert "error" in response.json(), "Ошибки нет"
 
-    def test_post_movies_valid_data(self, api_manager, super_admin_token, valid_data_for_create_movies):
+    def test_post_movies_valid_data(self, admin, new_movies):
         """Успешное создание фильма с валидными данными (**SUPER_ADMIN**)"""
-        response = api_manager.movies_api.post_movies(json = valid_data_for_create_movies, headers = super_admin_token, expected_status = 201)
+        response = admin.movies_api.post_movies(json = new_movies)
         id_create_movie = response.json()["id"]
-        response = api_manager.movies_api.get_movies_id(id_create_movie)
+        response = admin.movies_api.get_movies_id(id_create_movie)
         assert response.json()["id"] == id_create_movie, "Фильма нет в списке"
 
-    def test_post_movies_min_valid_data(self, api_manager, super_admin_token, min_valid_data_for_create_movies):
+    def test_post_movies_min_valid_data(self, admin, new_movies_min):
         """Успешное создание фильма с валидными данными (**SUPER_ADMIN**)"""
-        response = api_manager.movies_api.post_movies(json = min_valid_data_for_create_movies, headers = super_admin_token, expected_status = 201)
+        response = admin.movies_api.post_movies(json = new_movies_min)
         id_create_movie = response.json()["id"]
-        response = api_manager.movies_api.get_movies_id(id_create_movie)
+        response = admin.movies_api.get_movies_id(id_create_movie)
         assert response.json()["id"] == id_create_movie, "Фильма нет в списке"
 
-    def test_falied_post_movies(self, api_manager, super_admin_token, valid_data_for_create_movies):
+    def test_falied_post_movies(self, admin, new_movies):
         """Негативный тест: создание фильма с уже существующим названием (**SUPER_ADMIN**)"""
-        response = api_manager.movies_api.get_movies()
-        valid_data_for_create_movies["name"] = response.json()["movies"][0]["name"]
-        response = api_manager.movies_api.post_movies(json = valid_data_for_create_movies, headers = super_admin_token, expected_status = 409)
+        response = admin.movies_api.get_movies()
+        new_movies["name"] = response.json()["movies"][0]["name"]
+        response = admin.movies_api.post_movies(json = new_movies, expected_status = 409)
         assert "error" in response.json(), "Ошибки нет"
 
     def test_get_movies_id(self, api_manager):
@@ -58,19 +58,19 @@ class TestMoviesAPI:
         response = api_manager.movies_api.get_movies_id(not_movie_id, expected_status = 404)
         assert "error" in response.json(), "Ошибки нет"
 
-    def test_delete_movies_id(self, api_manager, super_admin_token, create_movies):
+    def test_delete_movies_id(self, admin, create_movies):
         """Успешное удаление фильма (**SUPER_ADMIN**)"""
         movie_id = create_movies["id"]
-        response = api_manager.movies_api.delete_movies(movie_id, headers = super_admin_token)
+        response = admin.movies_api.delete_movies(movie_id)
         assert response.status_code == 200, 'Фильм не удален'
-        response = api_manager.movies_api.get_movies_id(movie_id, expected_status = 404)
+        response = admin.movies_api.get_movies_id(movie_id, expected_status = 404)
         assert "error" in response.json(), "Ошибки нет"
         
-    def test_failed_delete_movies_id(self, api_manager, super_admin_token):
+    def test_failed_delete_movies_id(self, admin):
         """Негативный тест: удаление несуществующего фильма. (**SUPER_ADMIN**)"""
-        response = api_manager.movies_api.get_movies()
+        response = admin.movies_api.get_movies()
         not_movie_id = max([movie["id"] for movie in response.json()["movies"]]) + 1000
-        response = api_manager.movies_api.delete_movies(not_movie_id, headers = super_admin_token, expected_status = 404)
+        response = admin.movies_api.delete_movies(not_movie_id, expected_status = 404)
         assert "error" in response.json(), "Ошибки нет"
         
     def test_get_movies_reviews_id(self, api_manager):

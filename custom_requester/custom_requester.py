@@ -2,18 +2,19 @@ import json
 import requests
 import logging
 import os
+from constants import BASE_HEADERS
 
 class CustomRequester:
 
-    def __init__(self, base_url, headers = None):
+    def __init__(self, base_url):
         self.base_url = base_url
-        self.headers = (headers or {})
+        self.headers = BASE_HEADERS
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
     def send_requests(self, method, endpoint, expected_status = 200, **kwargs):
         url = f"{self.base_url}{endpoint}"
-        response = requests.request(method, url, **kwargs)
+        response = requests.request(method, url, headers = self.headers, **kwargs)
         self.log_request_response(response) 
         if response.status_code not in (expected_status if type(expected_status) == list else [expected_status]):
             raise ValueError(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
